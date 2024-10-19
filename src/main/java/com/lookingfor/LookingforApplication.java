@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LookingforApplication {
 
 	public static void main(String[] args) {
+		//코드 수정함!
 		SpringApplication.run(LookingforApplication.class, args);
 	}
 
