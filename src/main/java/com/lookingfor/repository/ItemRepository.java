@@ -1,17 +1,17 @@
 package com.lookingfor.repository;
 
-import com.lookingfor.entity.Item;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ItemRepository JpaRepository<JaksimMeetings, Integer>{
+import com.lookingfor.entity.Item;
+
+public interface ItemRepository extends JpaRepository<Item, Integer>{
 	
-	public Page<Item> findAllByTitleLikeAndCategory(String title, String category, Pageable p);
-	public Page<Item> findAllByTitleLike(String title, Pageable p);
-	public Page<Item> findAllByCategory(String category, Pageable p);
-	public Page<Item> findAllBy(Pageable p);
+//	public Page<Item> findAllByTitleLikeAndCategory(String title, String category, Pageable p);
+//	public Page<Item> findAllByTitleLike(String title, Pageable p);
+//	public Page<Item> findAllByCategory(String category, Pageable p);
+//	public Page<Item> findAllBy(Pageable p);
 
 }
 

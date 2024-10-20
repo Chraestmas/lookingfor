@@ -2,85 +2,72 @@ package com.lookingfor.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.lookingfor.dto.ItemDTO;
+import com.lookingfor.dto.PictureDTO;
+import com.lookingfor.entity.Item;
+import com.lookingfor.entity.Picture;
 import com.lookingfor.repository.ItemRepository;
+import com.lookingfor.repository.PictureRepository;
 
 @Service
 public class ItemService {
 	
 	ItemRepository ir;
+	PictureRepository pr;
 	
 	@Autowired
-	public ItemService(ItemRepository ir) {
+	public ItemService(ItemRepository ir, PictureRepository pr) {
 		this.ir = ir;
+		this.pr = pr;
 	}
 	
-	public PageResponse<ItemDTO> getMeetings(int page, int size, String keyword, String category) {
+	public ItemDTO getItemById(Integer id) {
+		ItemDTO itemdto = new ItemDTO();
 		
-		String findPattern = "%" + keyword + "%";// ex "%모임%"
-		
-		Sort s = Sort.by(Sort.Order.desc("createdAt"));
-		PageRequest pr = PageRequest.of(page-1, size, s);
-		
-		Page<Item> res = null;
-		if(category.equals("ALL")) {
-			if(keyword == null || keyword.equals("")) {
-				// category X, 제목 X
-				res = ir.findAllBy(pr);
-			}else {
-				// category X, 제목 O
-				res = ir.findAllByTitleLike(findPattern, pr);
-			}
-		}else {
-			
-			if(keyword == null || keyword.equals("")) {
-				//cate O 제목 X
-				res = ir.findAllByCategory(category, pr);
-			}else {
-				// cate O 제목 O
-				res = ir.findAllByTitleLikeAndCategory(findPattern, category, pr);
-			}
+		Optional<Item> optionalItem = ir.findById(id);
+		if(!optionalItem.isPresent()) {
+			return itemdto; // 해당 id의 item이 없음
 		}
 		
-		// res.getContent() --> 리스트<JaksimMeetings>  --> 리스트<JaksimMeetingsDTO>
-		// JaksimMeetings를 DTO로 바꿔주고 PageResponse에다 담아서 Controller로 전달
-		List<ItemDTO> li = new ArrayList<>();
-		for(Item jm : res.getContent()) {
-			ItemDTO jmdto = new ItemDTO();
-			jmdto.setCategory(jm.getCategory());
-			jmdto.setCoverUrl(jm.getCoverUrl());
-			jmdto.setMeetingId(jm.getMeetingId());
-			jmdto.setMissionTask(jm.getMissionTask());
-			jmdto.setTitle(jm.getTitle());
-			/*
-			List<MissionDaysDTO> mdList = new ArrayList<>();
-			for( MissionDays md : jm.getMissionDays()) {
-				MissionDaysDTO mddto = new MissionDaysDTO();
-				mddto.setDayOfWeek(md.getDayOfWeek());
-				mdList.add(mddto);
-			}
-			
-			jmdto.setMissionDays(mdList);
-			li.add(jmdto);
-			*/
-		}
+		Item itemEntity = optionalItem.get();
 		
-		PageResponse<ItemDTO> pageMeetings = new PageResponse<>();
-		pageMeetings.setList(li);
-		pageMeetings.setCurrentPage(page);
-		pageMeetings.setHasNext(page < res.getTotalPages());
-		pageMeetings.setHasPrevious(page > 1);
-		pageMeetings.setTotalElements(res.getTotalElements());
-		pageMeetings.setTotalPages(res.getTotalPages());
-		
-		return pageMeetings;
-		
-	}
 
-}
+		itemdto.setId(itemEntity.getId());
+		itemdto.setName(itemEntity.getName());
+		itemdto.setCategoryId(itemEntity.getCategoryId());
+		itemdto.setFoundDate(itemEntity.getFoundDate());
+		itemdto.setNameTag(itemEntity.getNameTag());
+		itemdto.setLocationId(itemEntity.getLocationId());
+		itemdto.setFoundYn(itemEntity.getFoundYn());
+		itemdto.setPickupDate(itemEntity.getPickupDate());
+		itemdto.setPickupPersonName(itemEntity.getPickupPersonName());
+		itemdto.setDescription(itemEntity.getDescription());
+		itemdto.setUserId(itemEntity.getUserId());
+
+		List<Picture> pictures = pr.findAllByItemId(id);
+		List<PictureDTO> picturesTarget = new ArrayList<>();
+		for(Picture pEntity : pictures) {
+			PictureDTO pdto = new PictureDTO();
+			pdto.setId(pEntity.getId());
+			pdto.setUrl(pEntity.getUrl());
+			
+			picturesTarget.add(pdto);
+		}
+		
+		itemdto.setPictures(picturesTarget);
+		
+		return itemdto;
+	}
+	
+}	
 
 /*
 package com.jaksim.service;

@@ -1,21 +1,31 @@
 package com.lookingfor.dto;
 
+import java.time.LocalDate;
+import java.util.List;
+
 public class ItemDTO {
 	
 	private Integer id;
 	private String name;
-	private Integer category_id;
-	private String found_date;
-	private String name_tag;
-	private Integer location_id;
-	private Boolean found_yn;
-	private String pickup_date;
-	private String pickup_person_name;
+	private Integer categoryId;
+	private LocalDate foundDate;
+	private String nameTag;
+	private Integer locationId;
+	private Character foundYn;
+	private LocalDate pickupDate;
+	private String pickupPersonName;
 	private String description;
-	private String user_id;
+	private String userId;
+	
+	private List<PictureDTO> pictures;
 	
 	
-	
+	public List<PictureDTO> getPictures() {
+		return pictures;
+	}
+	public void setPictures(List<PictureDTO> pictures) {
+		this.pictures = pictures;
+	}
 	public Integer getId() {
 		return id;
 	}
@@ -28,47 +38,47 @@ public class ItemDTO {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Integer getCategory_id() {
-		return category_id;
+	public Integer getCategoryId() {
+		return categoryId;
 	}
-	public void setCategory_id(Integer category_id) {
-		this.category_id = category_id;
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
 	}
-	public String getFound_date() {
-		return found_date;
+	public LocalDate getFoundDate() {
+		return foundDate;
 	}
-	public void setFound_date(String found_date) {
-		this.found_date = found_date;
+	public void setFoundDate(LocalDate foundDate) {
+		this.foundDate = foundDate;
 	}
-	public String getName_tag() {
-		return name_tag;
+	public String getNameTag() {
+		return nameTag;
 	}
-	public void setName_tag(String name_tag) {
-		this.name_tag = name_tag;
+	public void setNameTag(String nameTag) {
+		this.nameTag = nameTag;
 	}
-	public Integer getLocation_id() {
-		return location_id;
+	public Integer getLocationId() {
+		return locationId;
 	}
-	public void setLocation_id(Integer location_id) {
-		this.location_id = location_id;
+	public void setLocationId(Integer locationId) {
+		this.locationId = locationId;
 	}
-	public Boolean getFound_yn() {
-		return found_yn;
+	public Character getFoundYn() {
+		return foundYn;
 	}
-	public void setFound_yn(Boolean found_yn) {
-		this.found_yn = found_yn;
+	public void setFoundYn(Character foundYn) {
+		this.foundYn = foundYn;
 	}
-	public String getPickup_date() {
-		return pickup_date;
+	public LocalDate getPickupDate() {
+		return pickupDate;
 	}
-	public void setPickup_date(String pickup_date) {
-		this.pickup_date = pickup_date;
+	public void setPickupDate(LocalDate pickupDate) {
+		this.pickupDate = pickupDate;
 	}
-	public String getPickup_person_name() {
-		return pickup_person_name;
+	public String getPickupPersonName() {
+		return pickupPersonName;
 	}
-	public void setPickup_person_name(String pickup_person_name) {
-		this.pickup_person_name = pickup_person_name;
+	public void setPickupPersonName(String pickupPersonName) {
+		this.pickupPersonName = pickupPersonName;
 	}
 	public String getDescription() {
 		return description;
@@ -76,12 +86,15 @@ public class ItemDTO {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getUser_id() {
-		return user_id;
+	public String getUserId() {
+		return userId;
 	}
-	public void setUser_id(String user_id) {
-		this.user_id = user_id;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
+	
+	
+	
 	
 	
 }
