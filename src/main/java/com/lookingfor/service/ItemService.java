@@ -71,7 +71,10 @@ public class ItemService {
 	}
 	
 	//여러 아이템을 가져오는 메소드 --> 아직 foundYn 적용 전 
-	public PageResponse<ItemDTO> getItems(int page, int size, String keyword, String categoryId, boolean foundYn) {
+	public PageResponse<ItemDTO> getItems(int page, int size, String keyword, String categoryId, String type) {
+		// type : "all" --> 전체
+		// type : "found" --> 찾기완료된것만 조회
+		// type : "not-found" --> 찾기미완료된것만 조회
 		
 		String findPattern = "%" + keyword + "%";// ex "bottle%"
 		
@@ -119,16 +122,17 @@ public class ItemService {
 			itemDTO.setDescription(itemEntity.getDescription());
 			itemDTO.setUserId(itemEntity.getUserId());
 			
-			/*
-			List<PictureDTO> PictureDTOList = new ArrayList<>();
-			for( PictureEntity pictureEntity : pictureEntity.length) { // ???
+			List<PictureEntity> pictureEntityList = pictureRepository.findAllByItemId(itemEntity.getId());
+			List<PictureDTO> pictureDTOList = new ArrayList<>();
+			
+			for( PictureEntity pictureEntity : pictureEntityList) { // ???
 				PictureDTO pictureDTO = new PictureDTO();
 				pictureDTO.setUrl(pictureEntity.getUrl());
-				PictureDTOList.add(pictureDTO);
+				pictureDTOList.add(pictureDTO);
 			}
 			
-			//itemDTO.setMissionDays(pictureList); ???
-			*/
+			itemDTO.setPictures(pictureDTOList); 
+			
 			
 			ItemDTOList.add(itemDTO);
 			
