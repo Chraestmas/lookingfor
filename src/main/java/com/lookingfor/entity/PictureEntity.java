@@ -4,11 +4,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
-public class Picture {
+public class PictureEntity {
 	@Id
-	private Integer id;
-	private String url;
-	private Integer itemId;
+	private Integer 	id;
+	private String 		url;
+	private Integer 	itemId;
+	
 	public Integer getId() {
 		return id;
 	}

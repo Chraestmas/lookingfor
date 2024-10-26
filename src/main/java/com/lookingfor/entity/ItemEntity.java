@@ -8,20 +8,22 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Item{
+public class ItemEntity{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	private String name;
-	private Integer categoryId;
-	private LocalDate foundDate;
-	private String nameTag;
-	private Integer locationId;
-	private Character foundYn;
-	private LocalDate pickupDate;
-	private String pickupPersonName;
-	private String description;
-	private String userId;
+	private Integer 	id;
+	private String 		name;
+	private Integer 	categoryId;
+	private String 		categoryName;
+	private LocalDate 	foundDate;
+	private String 		nameTag;
+	private Integer 	locationId;
+	private String 		locationName;
+	private boolean 	foundYn;
+	private LocalDate 	pickupDate;
+	private String 		pickupPersonName;
+	private String 		description;
+	private String 		userId;
 	
 	
 	public Integer getId() {
@@ -42,6 +44,12 @@ public class Item{
 	public void setCategoryId(Integer categoryId) {
 		this.categoryId = categoryId;
 	}
+	public String getCategoryName() {
+		return categoryName;
+	}
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
 	public LocalDate getFoundDate() {
 		return foundDate;
 	}
@@ -60,10 +68,16 @@ public class Item{
 	public void setLocationId(Integer locationId) {
 		this.locationId = locationId;
 	}
-	public Character getFoundYn() {
+	public String getLocationName() {
+		return locationName;
+	}
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
+	}
+	public boolean getFoundYn() {
 		return foundYn;
 	}
-	public void setFoundYn(Character foundYn) {
+	public void setFoundYn(boolean foundYn) {
 		this.foundYn = foundYn;
 	}
 	public LocalDate getPickupDate() {
@@ -91,6 +105,7 @@ public class Item{
 		this.userId = userId;
 	}
 	
+
 	
 }
 

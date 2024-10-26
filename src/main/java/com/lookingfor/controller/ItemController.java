@@ -1,10 +1,5 @@
 package com.lookingfor.controller;
 
-<<<<<<< HEAD
-public class ItemController {
-
-}
-=======
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,37 +23,9 @@ public class ItemController {
 		this.is = is;
 	}
 	
-	// item 리스트를 조회하는 api
-//	@GetMapping("/api/items")
-//	public ResponseEntity<PageResponse<ItemDTO>> getItems(
-//			@RequestParam(name = "page", defaultValue = "1") int page,
-//			@RequestParam(name="size", defaultValue = "8") int size,
-//			@RequestParam(name="keyword", required = false) String keyword,
-//			@RequestParam(name="category", defaultValue = "ALL") String category) {
-//		// ItemsDTO가 리스트요소로 들어있는 PageResponse가
-//		// body에 들어있는 ResponseEntity를 front에 전달
-//		
-//		
-//		return ResponseEntity.status(200).body(is.getItems(page, size, keyword, category));
-//	}
-	
 	// id로 모임을 조회하는 api
 	@GetMapping("/api/item/{id}")
 	public ResponseEntity<ItemDTO> getItemById(@PathVariable("id") Integer id) {
 		return ResponseEntity.status(200).body(is.getItemById(id));
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> de9ff16db3ed17128dc5dabd9c3538f938296a51

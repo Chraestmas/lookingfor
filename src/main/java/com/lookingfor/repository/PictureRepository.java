@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.lookingfor.entity.Picture;
+import com.lookingfor.entity.PictureEntity;
 
-public interface PictureRepository extends JpaRepository<Picture, Integer> {
+public interface PictureRepository extends JpaRepository<PictureEntity, Integer> {
 	
 	
-	public List<Picture> findAllByItemId(Integer id);
+	public List<PictureEntity> findAllByItemId(Integer id);
 }
