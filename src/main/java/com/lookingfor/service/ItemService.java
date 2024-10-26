@@ -54,17 +54,18 @@ public class ItemService {
 		itemDTO.setDescription(itemEntity.getDescription());
 		itemDTO.setUserId(itemEntity.getUserId());
 
-		List<PictureEntity> pictures = pr.findAllByItemId(id);
-		List<PictureDTO> picturesTarget = new ArrayList<>();
-		for(PictureEntity pEntity : pictures) {
-			PictureDTO pdto = new PictureDTO();
-			pdto.setId(pEntity.getId());
-			pdto.setUrl(pEntity.getUrl());
+		List<PictureEntity> pictureEntityList = pictureRepository.findAllByItemId(id);
+		
+		List<PictureDTO> pictureDTOList = new ArrayList<>();
+		for(PictureEntity pictureEntity : pictureEntityList) {
+			PictureDTO pictureDTO = new PictureDTO();
+			pictureDTO.setId(pictureEntity.getId());
+			pictureDTO.setUrl(pictureEntity.getUrl());
 			
-			picturesTarget.add(pdto);
+			pictureDTOList.add(pictureDTO);
 		}
 		
-		itemDTO.setPictures(picturesTarget);
+		itemDTO.setPictures(pictureDTOList);
 		
 		return itemDTO;
 	}
@@ -100,7 +101,8 @@ public class ItemService {
 		
 		// res.getContent() --> 리스트<ItemEntity>  --> 리스트<ItemDTO>
 		// ItemEntity를 DTO로 바꿔주고 PageResponse에다 담아서 Controller로 전달
-		List<ItemDTO> li = new ArrayList<>();
+		List<ItemDTO> ItemDTOList = new ArrayList<>();
+		
 		for(ItemEntity itemEntity : res.getContent()) {
 			ItemDTO itemDTO = new ItemDTO();			
 			itemDTO.setId(itemEntity.getId());
@@ -117,20 +119,23 @@ public class ItemService {
 			itemDTO.setDescription(itemEntity.getDescription());
 			itemDTO.setUserId(itemEntity.getUserId());
 			
-			List<PictureDTO> pictureList = new ArrayList<>();
-			for( PictureEntity pictureEntity : itemEntity.getUrl()) { // ???
+			/*
+			List<PictureDTO> PictureDTOList = new ArrayList<>();
+			for( PictureEntity pictureEntity : pictureEntity.length) { // ???
 				PictureDTO pictureDTO = new PictureDTO();
-				//pictureDTO.setDayOfWeek(pictureEntity.getDayOfWeek()); ???
-				pictureList.add(pictureDTO);
+				pictureDTO.setUrl(pictureEntity.getUrl());
+				PictureDTOList.add(pictureDTO);
 			}
 			
 			//itemDTO.setMissionDays(pictureList); ???
-			li.add(itemDTO);
+			*/
+			
+			ItemDTOList.add(itemDTO);
 			
 		} // end of for
 		
 		PageResponse<ItemDTO> pageItems = new PageResponse<>();
-		pageItems.setList(li);
+		pageItems.setList(ItemDTOList);
 		pageItems.setCurrentPage(page);
 		pageItems.setHasNext(page < res.getTotalPages());
 		pageItems.setHasPrevious(page > 1);
