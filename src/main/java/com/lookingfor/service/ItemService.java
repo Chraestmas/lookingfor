@@ -8,9 +8,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
+import com.jaksim.entity.JaksimMeetings;
 import com.lookingfor.dto.ItemDTO;
 import com.lookingfor.dto.PictureDTO;
 import com.lookingfor.entity.ItemEntity;
@@ -35,7 +38,7 @@ public class ItemService {
 	public ItemDTO getItemById(Integer id) {
 		ItemDTO itemDTO = new ItemDTO();
 		
-		Optional<ItemEntity> optionalItem = itemRepository.findById(id);
+		Optional<ItemEntity> optionalItem = itemRepository.findByItemId(id);
 		if(!optionalItem.isPresent()) {
 			return itemDTO; // 해당 id의 item이 없음
 		}
@@ -68,8 +71,70 @@ public class ItemService {
 		itemDTO.setPictures(pictureDTOList);
 		
 		return itemDTO;
+	} // end of getItemById
+	
+	
+	public PageResponse<ItemDTO> getItems(int page, int size, char foundYn, Integer[] categoryId, String itemName) {
+		
+		Sort s = Sort.by(Sort.Order.desc("createdAt"));
+		PageRequest pr = PageRequest.of(page-1, size, s);
+		
+		Page<ItemEntity> res = null;
+		
+		res = itemRepository.findAllByFoundYnInAndCategoryIdInAndNameLike(foundYn, categoryId, itemName);
+		
+		// res.getContent() --> 리스트<ItemEntity>  --> 리스트<ItemDTO>
+		// ItemEntity를 DTO로 바꿔주고 PageResponse에다 담아서 Controller로 전달
+		List<ItemDTO> itemDTOList = new ArrayList<>();
+		
+		for(ItemEntity itemEntity : res.getContent()) {
+			ItemDTO itemDTO = new ItemDTO();			
+			itemDTO.setId(itemEntity.getId());
+			itemDTO.setName(itemEntity.getName());
+			itemDTO.setCategoryId(itemEntity.getCategoryId());
+			itemDTO.setCategoryName(itemEntity.getCategoryName());
+			itemDTO.setFoundDate(itemEntity.getFoundDate());
+			itemDTO.setNameTag(itemEntity.getNameTag());
+			itemDTO.setLocationId(itemEntity.getLocationId());
+			itemDTO.setLocationName(itemEntity.getLocationName());
+			itemDTO.setFoundYn(itemEntity.getFoundYn());
+			itemDTO.setPickupDate(itemEntity.getPickupDate());
+			itemDTO.setPickupPersonName(itemEntity.getPickupPersonName());
+			itemDTO.setDescription(itemEntity.getDescription());
+			itemDTO.setUserId(itemEntity.getUserId());
+			
+			List<PictureEntity> pictureEntityList = pictureRepository.findAllByItemId(itemEntity.getId());
+			List<PictureDTO> pictureDTOList = new ArrayList<>();
+			
+			for( PictureEntity pictureEntity : pictureEntityList) { // ???
+				PictureDTO pictureDTO = new PictureDTO();
+				pictureDTO.setUrl(pictureEntity.getUrl());
+				pictureDTOList.add(pictureDTO);
+			}
+			
+			itemDTO.setPictures(pictureDTOList); 
+			
+			
+			itemDTOList.add(itemDTO);
+			
+		} // end of for
+		
+		PageResponse<ItemDTO> pageItems = new PageResponse<>();
+		pageItems.setList(ItemDTOList);
+		pageItems.setCurrentPage(page);
+		pageItems.setHasNext(page < res.getTotalPages());
+		pageItems.setHasPrevious(page > 1);
+		pageItems.setTotalElements(res.getTotalElements());
+		pageItems.setTotalPages(res.getTotalPages());
+		
+		return pageItems;
+
 	}
 	
+
+	
+	
+	/*
 	//여러 아이템을 가져오는 메소드 --> 아직 foundYn 적용 전 
 	public PageResponse<ItemDTO> getItems(int page, int size, String keyword, String categoryId, String type) {
 		// type : "all" --> 전체
@@ -89,13 +154,13 @@ public class ItemService {
 				res = itemRepository.findAllBy(pageRequest);
 			}else {
 				// category X, keyword O
-				res = itemRepository.findAllByTitleLike(findPattern, pageRequest);
+				res = itemRepository.findAllByItemNameLike(findPattern, pageRequest);
 			}
 		} else {
 			
 			if(keyword == null || keyword.equals("")) {
 				//category O keyword X
-				res = itemRepository.findAllByCategory(categoryId, pageRequest);
+				res = itemRepository.findAllByCategoryId(categoryId, pageRequest);
 			}else {
 				// category O keyword O
 				res = itemRepository.findAllByTitleLikeAndCategory(findPattern, categoryId, pageRequest);
@@ -148,5 +213,6 @@ public class ItemService {
 		
 		return pageItems;
 		
-	}
+	} // end of getItems
+	*/
 }	

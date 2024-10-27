@@ -19,7 +19,7 @@ public class ItemEntity{
 	private String 		nameTag;
 	private Integer 	locationId;
 	private String 		locationName;
-	private boolean 	foundYn;
+	private char 		foundYn;
 	private LocalDate 	pickupDate;
 	private String 		pickupPersonName;
 	private String 		description;
@@ -74,10 +74,10 @@ public class ItemEntity{
 	public void setLocationName(String locationName) {
 		this.locationName = locationName;
 	}
-	public boolean getFoundYn() {
+	public char getFoundYn() {
 		return foundYn;
 	}
-	public void setFoundYn(boolean foundYn) {
+	public void setFoundYn(char foundYn) {
 		this.foundYn = foundYn;
 	}
 	public LocalDate getPickupDate() {
