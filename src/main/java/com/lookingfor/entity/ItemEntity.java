@@ -1,136 +1,118 @@
-package com.lookingfor.dto;
+package com.lookingfor.entity;
 
 import java.time.LocalDate;
-import java.util.List;
 
-public class ItemDTO {
-	
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "item")
+public class ItemEntity{
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer 	id;
 	private String 		name;
-	private Integer 	categoryId;
-	private String		categoryName;
+	
+	@ManyToOne
+	@JoinColumn(name = "category_id")
+	private CategoryEntity category;
+	
 	private LocalDate 	foundDate;
 	private String 		nameTag;
-	private Integer 	locationId;
-	private String 		locationName;
-	private char	 	foundYn;
+	
+	@ManyToOne
+	@JoinColumn(name = "location_id")
+	private LocationEntity 	location;
+	
+	private char 		foundYn;
 	private LocalDate 	pickupDate;
 	private String 		pickupPersonName;
 	private String 		description;
-	private String 		userId;
-	private List<PictureDTO> pictures;
 	
-
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private UserEntity 		user;
+	
+	
 	public Integer getId() {
 		return id;
 	}
-
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public Integer getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryId(Integer categoryId) {
-		this.categoryId = categoryId;
-	}
-
-	public String getCategoryName() {
-		return categoryName;
-	}
-
-	public void setCategoryName(String categoryName) {
-		this.categoryName = categoryName;
-	}
-
+	
 	public LocalDate getFoundDate() {
 		return foundDate;
 	}
-
 	public void setFoundDate(LocalDate foundDate) {
 		this.foundDate = foundDate;
 	}
-
 	public String getNameTag() {
 		return nameTag;
 	}
-
 	public void setNameTag(String nameTag) {
 		this.nameTag = nameTag;
 	}
 
-	public Integer getLocationId() {
-		return locationId;
-	}
-
-	public void setLocationId(Integer locationId) {
-		this.locationId = locationId;
-	}
-	
-	public String getLocationName() {
-		return locationName;
-	}
-
-	public void setLocationName(String locationName) {
-		this.locationName = locationName;
-	}
 
 	public char getFoundYn() {
 		return foundYn;
 	}
-
 	public void setFoundYn(char foundYn) {
 		this.foundYn = foundYn;
 	}
-
 	public LocalDate getPickupDate() {
 		return pickupDate;
 	}
-
 	public void setPickupDate(LocalDate pickupDate) {
 		this.pickupDate = pickupDate;
 	}
-
 	public String getPickupPersonName() {
 		return pickupPersonName;
 	}
-
 	public void setPickupPersonName(String pickupPersonName) {
 		this.pickupPersonName = pickupPersonName;
 	}
-
 	public String getDescription() {
 		return description;
 	}
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-	public String getUserId() {
-		return userId;
+	
+	public UserEntity getUser() {
+		return user;
 	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUser(UserEntity user) {
+		this.user = user;
 	}
-
-	public List<PictureDTO> getPictures() {
-		return pictures;
+	public CategoryEntity getCategory() {
+		return category;
 	}
-
-	public void setPictures(List<PictureDTO> pictures) {
-		this.pictures = pictures;
+	public void setCategory(CategoryEntity category) {
+		this.category = category;
+	}
+	public LocationEntity getLocation() {
+		return location;
+	}
+	public void setLocation(LocationEntity location) {
+		this.location = location;
 	}
 	
+
+	
 }
+
+
+
