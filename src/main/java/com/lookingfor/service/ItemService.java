@@ -3,6 +3,7 @@ package com.lookingfor.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Sort;
 import org.springframework.stereotype.Service;
 
 import com.lookingfor.dto.ItemDTO;
