@@ -2,8 +2,10 @@ package com.lookingfor.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "picture")
 public class PictureEntity {
 	@Id
 	private Integer 	id;

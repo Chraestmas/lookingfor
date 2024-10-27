@@ -9,29 +9,35 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.jaksim.entity.MeetingMembers;
 import com.lookingfor.entity.ItemEntity;
 
 public interface ItemRepository extends JpaRepository<ItemEntity, Integer>{
 	
-	public Page<ItemEntity> findByItemId(Integer itemId);
 	
 	// jpql을 활용하여 조건 검색하기 
-	@Query("select a.*, b.name as category_Name, c.name as location_Name, d.name as admin_Name"
-			+ "from item a, category b, location c, user d"
-			+ "where a.category_id = b.id"
-			+ "and a.location_id = c.id"
-			+ "and a.user_id = d.id"
-			+ "and a.found_yn in (:foundYn)"
-			+ "and a.category_id in (:categoryId)"
-			+ "and a.name like '%:itemName%'")
+//	@Query("select a.*, b.name as category_Name, c.name as location_Name, d.name as admin_Name"
+//			+ "from item a, category b, location c, user d"
+//			+ "where a.category_id = b.id"
+//			+ "and a.location_id = c.id"
+//			+ "and a.user_id = d.id"
+//			+ "and a.found_yn in (:foundYn)"
+//			+ "and a.category_id in (:categoryId)"
+//			+ "and a.name like '%:itemName%'")
+//	public Page<ItemEntity> findAllByFoundYnInAndCategoryIdInAndNameLike(
+//			@Param("foundYn") char[] foundYn, 
+//			@Param("categoryId") Integer[] categoryId, 
+//			@Param("itemName") String itemName);
 	
-	public Page<ItemEntity> findAllByFoundYnInAndCategoryIdInAndNameLike(
-			@Param("foundYn") char foundYn, 
-			@Param("categoryId") Integer[] categoryId, 
-			@Param("itemName") String itemName);
 	
-	}
+		Page<ItemEntity> findAllByFoundYnInAndCategory_IdInAndNameLike(
+				List<Character> foundYns,
+				List<Integer> categoryIds, 
+				String name,
+				Pageable p
+		);
+	
+	
+	
 	
 	/*
 	// jpql을 활용하여 조건 검색하기 
