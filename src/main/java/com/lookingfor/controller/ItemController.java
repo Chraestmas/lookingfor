@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lookingfor.dto.ItemDTO;
@@ -42,6 +44,13 @@ public class ItemController {
 		
 		
 		return ResponseEntity.status(200).body(is.getItems(page, size, foundYn, categoryId, itemName));
+	}
+	
+	@PostMapping("/api/item")
+	public ResponseEntity<ItemDTO> createNewItem(@RequestBody ItemDTO itemDto) {
+//		System.out.println(itemDto);
+
+		return ResponseEntity.status(200).body(is.createItem(itemDto));
 	}
 }
 

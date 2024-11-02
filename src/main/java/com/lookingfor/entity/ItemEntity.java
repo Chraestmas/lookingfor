@@ -3,6 +3,7 @@ package com.lookingfor.entity;
 import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,7 +30,7 @@ public class ItemEntity{
 	@JoinColumn(name = "location_id")
 	private LocationEntity 	location;
 	
-	private char 		foundYn;
+	private Character 		foundYn;
 	private LocalDate 	pickupDate;
 	private String 		pickupPersonName;
 	private String 		description;
@@ -66,10 +67,10 @@ public class ItemEntity{
 	}
 
 
-	public char getFoundYn() {
+	public Character getFoundYn() {
 		return foundYn;
 	}
-	public void setFoundYn(char foundYn) {
+	public void setFoundYn(Character foundYn) {
 		this.foundYn = foundYn;
 	}
 	public LocalDate getPickupDate() {

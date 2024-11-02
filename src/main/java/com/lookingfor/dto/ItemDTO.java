@@ -13,12 +13,32 @@ public class ItemDTO {
 	private String 		nameTag;
 	private Integer 	locationId;
 	private String 		locationName;
-	private char	 	foundYn;
+	private Character	 	foundYn;
 	private LocalDate 	pickupDate;
 	private String 		pickupPersonName;
 	private String 		description;
 	private String 		userId;
 	private List<PictureDTO> pictures;
+	
+	@Override
+	public String toString() {
+		String res = "";
+		res += "id:" +id;
+		res += "name:" +name;
+		res += "categoryId:" +categoryId;
+		res += "categoryName:" +categoryName;
+		res += "foundDate:" +foundDate;
+		res += "nameTag:" +nameTag;
+		res += "locationId:" +locationId;
+		res += "locationName:" +locationName;
+		res += "foundYn:" +foundYn;
+		res += "pickupDate:" +pickupDate;
+		res += "pickupPersonName:" +pickupPersonName;
+		res += "description:" +description;
+		res += "userId:" +userId;
+		
+		return res;
+	}
 	
 
 	public Integer getId() {
@@ -85,11 +105,11 @@ public class ItemDTO {
 		this.locationName = locationName;
 	}
 
-	public char getFoundYn() {
+	public Character getFoundYn() {
 		return foundYn;
 	}
 
-	public void setFoundYn(char foundYn) {
+	public void setFoundYn(Character foundYn) {
 		this.foundYn = foundYn;
 	}
 

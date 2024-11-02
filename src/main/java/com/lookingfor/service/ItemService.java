@@ -1,8 +1,6 @@
 package com.lookingfor.service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,20 +8,21 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
-import com.jaksim.entity.JaksimMeetings;
 import com.lookingfor.dto.ItemDTO;
 import com.lookingfor.dto.PictureDTO;
 import com.lookingfor.entity.CategoryEntity;
 import com.lookingfor.entity.ItemEntity;
+import com.lookingfor.entity.LocationEntity;
 import com.lookingfor.entity.PictureEntity;
+import com.lookingfor.entity.UserEntity;
 import com.lookingfor.repository.CategoryRepository;
 import com.lookingfor.repository.ItemRepository;
+import com.lookingfor.repository.LocationRepository;
 import com.lookingfor.repository.PictureRepository;
+import com.lookingfor.repository.UserRepository;
 import com.lookingfor.response.PageResponse;
 
 @Service
@@ -32,13 +31,79 @@ public class ItemService {
 	ItemRepository itemRepository;
 	PictureRepository pictureRepository;
 	CategoryRepository categoryRepository;
+	LocationRepository locationRepository;
+	UserRepository userRepository;
 	
 	@Autowired
 	public ItemService(ItemRepository itemRepository, PictureRepository pictureRepository, 
-			CategoryRepository categoryRepository) {
+			CategoryRepository categoryRepository, LocationRepository locationRepository,
+			UserRepository userRepository) {
 		this.itemRepository = itemRepository;
 		this.pictureRepository = pictureRepository;
 		this.categoryRepository = categoryRepository;
+		this.locationRepository = locationRepository;
+		this.userRepository = userRepository;
+	}
+	
+	//새로운 item을 create 하는 메소드
+	public ItemDTO createItem(ItemDTO itemDto) {
+		ItemDTO res = new ItemDTO();
+		
+		// ItemDTO를 ItemEntity로 변환
+		ItemEntity itemEntity = new ItemEntity();
+		itemEntity.setName(itemDto.getName());
+		
+		Optional<CategoryEntity> optCe = categoryRepository.findById(itemDto.getCategoryId());
+		if(!optCe.isPresent()) {
+			return res;
+		}
+		itemEntity.setCategory( optCe.get() );
+		
+		itemEntity.setFoundDate(itemDto.getFoundDate());
+		itemEntity.setNameTag(itemDto.getNameTag());
+		
+		Optional<LocationEntity> optLe = locationRepository.findById(itemDto.getLocationId());
+		if(!optLe.isPresent()) {
+			return res;
+		}
+		itemEntity.setLocation(optLe.get());
+		
+		itemEntity.setFoundYn('N');
+		
+		itemEntity.setDescription(itemDto.getDescription());
+		
+		Optional<UserEntity> optUe = userRepository.findById(itemDto.getUserId());
+		if(!optUe.isPresent()) {
+			return res;
+		}
+		itemEntity.setUser(optUe.get());
+		
+		try {
+			ItemEntity savedItem = itemRepository.save(itemEntity);
+//			System.out.println(savedItem.getCategory().getName());
+			// front에 전달하기 위해 Entity를 DTO로 변환
+//			System.out.println(savedItem.getId());
+			res.setId(savedItem.getId());
+			res.setName(savedItem.getName());
+			res.setCategoryId(savedItem.getCategory().getId());
+			res.setCategoryName(savedItem.getCategory().getName());
+			res.setFoundDate(savedItem.getFoundDate());
+			res.setNameTag(savedItem.getNameTag());
+			res.setLocationId(savedItem.getLocation().getId());
+			res.setLocationName(savedItem.getLocation().getName());
+			res.setFoundYn(savedItem.getFoundYn());
+			res.setPickupDate(savedItem.getPickupDate());
+			res.setPickupPersonName(savedItem.getPickupPersonName());
+			res.setDescription(savedItem.getDescription());
+			res.setUserId(savedItem.getUser().getId());
+			
+			return res;
+
+			
+		}catch(Exception e) {
+			return res;
+		}
+
 	}
 	
 	//item을 id로 찾는 메소
@@ -54,15 +119,17 @@ public class ItemService {
 		
 		itemDTO.setId(itemEntity.getId());
 		itemDTO.setName(itemEntity.getName());
-		itemDTO.setCategoryId(itemEntity.getCategoryId());
+		itemDTO.setCategoryId(itemEntity.getCategory().getId());
+		itemDTO.setCategoryName(itemEntity.getCategory().getName());
 		itemDTO.setFoundDate(itemEntity.getFoundDate());
 		itemDTO.setNameTag(itemEntity.getNameTag());
-		itemDTO.setLocationId(itemEntity.getLocationId());
+		itemDTO.setLocationId(itemEntity.getLocation().getId());
+		itemDTO.setLocationName(itemEntity.getLocation().getName());
 		itemDTO.setFoundYn(itemEntity.getFoundYn());
 		itemDTO.setPickupDate(itemEntity.getPickupDate());
 		itemDTO.setPickupPersonName(itemEntity.getPickupPersonName());
 		itemDTO.setDescription(itemEntity.getDescription());
-		itemDTO.setUserId(itemEntity.getUserId());
+		itemDTO.setUserId(itemEntity.getUser().getId());
 
 		List<PictureEntity> pictureEntityList = pictureRepository.findAllByItemId(id);
 		
