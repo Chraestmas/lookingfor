@@ -22,37 +22,44 @@ import com.lookingfor.service.ItemService;
 
 public class ItemController {
 	
-	ItemService is;
+	ItemService itemService;
 	
 	@Autowired
-	public ItemController(ItemService is) {
-		this.is = is;
+	public ItemController(ItemService itemService) {
+		this.itemService = itemService;
 	}
 	
-	// id로 모임을 조회하는 api
+	// id로 item을 조회하는 api (한 건) 
 	@GetMapping("/api/item/{id}")
 	public ResponseEntity<ItemDTO> getItemById(@PathVariable("id") Integer id) {
-		return ResponseEntity.status(200).body(is.getItemById(id));
+		return ResponseEntity.status(200).body(itemService.getItemById(id));
 	}
 	
+	//조건에 해당하는 item을 조회하는 api (여러 건 가능)
 	@GetMapping("/api/item")
 	public ResponseEntity<PageResponse<ItemDTO>> getItems(
-			@RequestParam(name = "categoryId" , required = false) List<Integer> categoryId,
-			@RequestParam(name = "foundYn", required = false) List<Character> foundYn,
-			@RequestParam(name = "itemName", required = false) String itemName,
-			@RequestParam(name = "page", defaultValue = "1") Integer page,
-			@RequestParam(name="size", defaultValue="3") Integer size) {
+		@RequestParam(name = "categoryId" , required = false) List<Integer> categoryId,
+		@RequestParam(name = "foundYn", required = false) List<Character> foundYn,
+		@RequestParam(name = "itemName", required = false) String itemName,
+		@RequestParam(name = "page", defaultValue = "1") Integer page,
+		@RequestParam(name="size", defaultValue="3") Integer size) {
 		
-		
-		return ResponseEntity.status(200).body(is.getItems(page, size, foundYn, categoryId, itemName));
+		return ResponseEntity.status(200).body(itemService.getItems(page, size, foundYn, categoryId, itemName));
 	}
 	
+	//item 정보를 입력하는 api
 	@PostMapping("/api/item")
-	public ResponseEntity<ItemDTO> createNewItem(@ModelAttribute ItemDTO itemDto) {
-//		System.out.println(itemDto);
+	public ResponseEntity<ItemDTO> createNewItem(@RequestBody ItemDTO itemDto) {
+		return ResponseEntity.status(200).body(itemService.createItem(itemDto));
 
-		return ResponseEntity.status(200).body(is.createItem(itemDto));
 	}
+	
+	//item 정보를 수정하는 api
+	@PostMapping("/api/item/{id}")
+	public ResponseEntity<ItemDTO> updateItem(@RequestBody ItemDTO itemDto) {
+		return ResponseEntity.status(200).body(itemService.createItem(itemDto));
+	}
+	
 }
 
 

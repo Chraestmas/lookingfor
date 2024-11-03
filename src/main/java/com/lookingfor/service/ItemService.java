@@ -45,9 +45,10 @@ public class ItemService {
 		this.userRepository = userRepository;
 	}
 	
+	
 	//새로운 item을 create 하는 메소드
 	public ItemDTO createItem(ItemDTO itemDto) {
-		ItemDTO res = new ItemDTO();
+		ItemDTO itemDTO = new ItemDTO();
 		
 		// ItemDTO를 ItemEntity로 변환
 		ItemEntity itemEntity = new ItemEntity();
@@ -55,7 +56,7 @@ public class ItemService {
 		
 		Optional<CategoryEntity> optCe = categoryRepository.findById(itemDto.getCategoryId());
 		if(!optCe.isPresent()) {
-			return res;
+			return itemDTO;
 		}
 		itemEntity.setCategory( optCe.get() );
 		
@@ -64,7 +65,7 @@ public class ItemService {
 		
 		Optional<LocationEntity> optLe = locationRepository.findById(itemDto.getLocationId());
 		if(!optLe.isPresent()) {
-			return res;
+			return itemDTO;
 		}
 		itemEntity.setLocation(optLe.get());
 		
@@ -74,7 +75,7 @@ public class ItemService {
 		
 		Optional<UserEntity> optUe = userRepository.findById(itemDto.getUserId());
 		if(!optUe.isPresent()) {
-			return res;
+			return itemDTO;
 		}
 		itemEntity.setUser(optUe.get());
 		
@@ -83,30 +84,98 @@ public class ItemService {
 //			System.out.println(savedItem.getCategory().getName());
 			// front에 전달하기 위해 Entity를 DTO로 변환
 //			System.out.println(savedItem.getId());
-			res.setId(savedItem.getId());
-			res.setName(savedItem.getName());
-			res.setCategoryId(savedItem.getCategory().getId());
-			res.setCategoryName(savedItem.getCategory().getName());
-			res.setFoundDate(savedItem.getFoundDate());
-			res.setNameTag(savedItem.getNameTag());
-			res.setLocationId(savedItem.getLocation().getId());
-			res.setLocationName(savedItem.getLocation().getName());
-			res.setFoundYn(savedItem.getFoundYn());
-			res.setPickupDate(savedItem.getPickupDate());
-			res.setPickupPersonName(savedItem.getPickupPersonName());
-			res.setDescription(savedItem.getDescription());
-			res.setUserId(savedItem.getUser().getId());
+			itemDTO.setId(savedItem.getId());
+			itemDTO.setName(savedItem.getName());
+			itemDTO.setCategoryId(savedItem.getCategory().getId());
+			itemDTO.setCategoryName(savedItem.getCategory().getName());
+			itemDTO.setFoundDate(savedItem.getFoundDate());
+			itemDTO.setNameTag(savedItem.getNameTag());
+			itemDTO.setLocationId(savedItem.getLocation().getId());
+			itemDTO.setLocationName(savedItem.getLocation().getName());
+			itemDTO.setFoundYn(savedItem.getFoundYn());
+			itemDTO.setPickupDate(savedItem.getPickupDate());
+			itemDTO.setPickupPersonName(savedItem.getPickupPersonName());
+			itemDTO.setDescription(savedItem.getDescription());
+			itemDTO.setUserId(savedItem.getUser().getId());
 			
-			return res;
+			return itemDTO;
 
-			
 		}catch(Exception e) {
-			return res;
+			return itemDTO;
 		}
 
 	}
 	
-	//item을 id로 찾는 메소
+	//특정 item을 수정하는 메소드 
+	public ItemDTO updateItemById(ItemDTO itemDto) {
+		
+		ItemDTO itemDTO = new ItemDTO();
+		
+		Optional<ItemEntity> optionalItem = itemRepository.findById(itemDto.getId());
+		if(!optionalItem.isPresent()) {
+			return itemDTO; // 해당 id의 item이 없음
+		}
+		
+		
+		// ItemDTO를 ItemEntity로 변환
+		ItemEntity itemEntity = new ItemEntity();
+		itemEntity.setName(itemDto.getName());
+		
+		Optional<CategoryEntity> optCe = categoryRepository.findById(itemDto.getCategoryId());
+		if(!optCe.isPresent()) {
+			return itemDTO;
+		}
+		itemEntity.setCategory( optCe.get() );
+
+		
+		itemEntity.setFoundDate(itemDto.getFoundDate());
+		itemEntity.setNameTag(itemDto.getNameTag());
+		
+		Optional<LocationEntity> optLe = locationRepository.findById(itemDto.getLocationId());
+		if(!optLe.isPresent()) {
+			return itemDTO;
+		}
+		itemEntity.setLocation(optLe.get());
+		
+		itemEntity.setFoundYn(itemDto.getFoundYn());
+		itemEntity.setDescription(itemDto.getDescription());
+		
+		Optional<UserEntity> optUe = userRepository.findById(itemDto.getUserId());
+		if(!optUe.isPresent()) {
+			return itemDTO;
+		}
+		itemEntity.setUser(optUe.get());
+		
+		//추가 
+		itemEntity.setPickupDate(itemDto.getPickupDate());
+		itemEntity.setPickupPersonName(itemDto.getPickupPersonName());
+	
+		try {
+			ItemEntity savedItem = itemRepository.save(itemEntity);
+			// front에 전달하기 위해 Entity를 DTO로 변환
+			itemDTO.setId(savedItem.getId());
+			itemDTO.setName(savedItem.getName());
+			itemDTO.setCategoryId(savedItem.getCategory().getId());
+			itemDTO.setCategoryName(savedItem.getCategory().getName());
+			itemDTO.setFoundDate(savedItem.getFoundDate());
+			itemDTO.setNameTag(savedItem.getNameTag());
+			itemDTO.setLocationId(savedItem.getLocation().getId());
+			itemDTO.setLocationName(savedItem.getLocation().getName());
+			itemDTO.setFoundYn(savedItem.getFoundYn());
+			itemDTO.setPickupDate(savedItem.getPickupDate());
+			itemDTO.setPickupPersonName(savedItem.getPickupPersonName());
+			itemDTO.setDescription(savedItem.getDescription());
+			itemDTO.setUserId(savedItem.getUser().getId());
+		
+			return itemDTO;
+
+		}catch(Exception e) {
+			return itemDTO;
+		}
+	
+	}
+	
+	//item을 id로 찾는 메소드 
 	public ItemDTO getItemById(Integer id) {
 		ItemDTO itemDTO = new ItemDTO();
 		
@@ -148,6 +217,7 @@ public class ItemService {
 	} // end of getItemById
 	
 	
+	//조건값에 해당하는 아이템을 찾는 메소드 
 	public PageResponse<ItemDTO> getItems(int page, int size, List<Character> foundYn, List<Integer> categoryId, String itemName) {
 		
 		Sort s = Sort.by(Sort.Order.desc("foundDate"));
@@ -223,89 +293,5 @@ public class ItemService {
 		return pageItems;
 
 	}
-	
 
-	
-	
-	/*
-	//여러 아이템을 가져오는 메소드 --> 아직 foundYn 적용 전 
-	public PageResponse<ItemDTO> getItems(int page, int size, String keyword, String categoryId, String type) {
-		// type : "all" --> 전체
-		// type : "found" --> 찾기완료된것만 조회
-		// type : "not-found" --> 찾기미완료된것만 조회
-		
-		String findPattern = "%" + keyword + "%";// ex "bottle%"
-		
-		Sort s = Sort.by(Sort.Order.desc("createdAt"));
-		PageRequest pageRequest = PageRequest.of(page-1, size, s);
-		
-		Page<ItemEntity> res = null;
-		
-		if(categoryId.equals("ALL")) {
-			if(keyword == null || keyword.equals("")) {
-				// category X, keyword X
-				res = itemRepository.findAllBy(pageRequest);
-			}else {
-				// category X, keyword O
-				res = itemRepository.findAllByItemNameLike(findPattern, pageRequest);
-			}
-		} else {
-			
-			if(keyword == null || keyword.equals("")) {
-				//category O keyword X
-				res = itemRepository.findAllByCategoryId(categoryId, pageRequest);
-			}else {
-				// category O keyword O
-				res = itemRepository.findAllByTitleLikeAndCategory(findPattern, categoryId, pageRequest);
-			}
-		}
-		
-		// res.getContent() --> 리스트<ItemEntity>  --> 리스트<ItemDTO>
-		// ItemEntity를 DTO로 바꿔주고 PageResponse에다 담아서 Controller로 전달
-		List<ItemDTO> ItemDTOList = new ArrayList<>();
-		
-		for(ItemEntity itemEntity : res.getContent()) {
-			ItemDTO itemDTO = new ItemDTO();			
-			itemDTO.setId(itemEntity.getId());
-			itemDTO.setName(itemEntity.getName());
-			itemDTO.setCategoryId(itemEntity.getCategoryId());
-			itemDTO.setCategoryName(itemEntity.getCategoryName());
-			itemDTO.setFoundDate(itemEntity.getFoundDate());
-			itemDTO.setNameTag(itemEntity.getNameTag());
-			itemDTO.setLocationId(itemEntity.getLocationId());
-			itemDTO.setLocationName(itemEntity.getLocationName());
-			itemDTO.setFoundYn(itemEntity.getFoundYn());
-			itemDTO.setPickupDate(itemEntity.getPickupDate());
-			itemDTO.setPickupPersonName(itemEntity.getPickupPersonName());
-			itemDTO.setDescription(itemEntity.getDescription());
-			itemDTO.setUserId(itemEntity.getUserId());
-			
-			List<PictureEntity> pictureEntityList = pictureRepository.findAllByItemId(itemEntity.getId());
-			List<PictureDTO> pictureDTOList = new ArrayList<>();
-			
-			for( PictureEntity pictureEntity : pictureEntityList) { // ???
-				PictureDTO pictureDTO = new PictureDTO();
-				pictureDTO.setUrl(pictureEntity.getUrl());
-				pictureDTOList.add(pictureDTO);
-			}
-			
-			itemDTO.setPictures(pictureDTOList); 
-			
-			
-			ItemDTOList.add(itemDTO);
-			
-		} // end of for
-		
-		PageResponse<ItemDTO> pageItems = new PageResponse<>();
-		pageItems.setList(ItemDTOList);
-		pageItems.setCurrentPage(page);
-		pageItems.setHasNext(page < res.getTotalPages());
-		pageItems.setHasPrevious(page > 1);
-		pageItems.setTotalElements(res.getTotalElements());
-		pageItems.setTotalPages(res.getTotalPages());
-		
-		return pageItems;
-		
-	} // end of getItems
-	*/
 }	
