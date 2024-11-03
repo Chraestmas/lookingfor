@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,7 +48,7 @@ public class ItemController {
 	}
 	
 	@PostMapping("/api/item")
-	public ResponseEntity<ItemDTO> createNewItem(@RequestBody ItemDTO itemDto) {
+	public ResponseEntity<ItemDTO> createNewItem(@ModelAttribute ItemDTO itemDto) {
 //		System.out.println(itemDto);
 
 		return ResponseEntity.status(200).body(is.createItem(itemDto));

@@ -20,6 +20,8 @@ public class ItemDTO {
 	private String 		userId;
 	private List<PictureDTO> pictures;
 	
+	
+	
 	@Override
 	public String toString() {
 		String res = "";
