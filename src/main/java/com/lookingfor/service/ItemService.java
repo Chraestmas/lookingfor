@@ -73,7 +73,7 @@ public class ItemService {
 		
 		try {
 			imageFile.transferTo(file);
-			return file.getAbsolutePath();
+			return "/src/main/resources/uploads/" + file.getName();
 		}catch(IOException e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
