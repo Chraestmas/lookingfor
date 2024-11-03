@@ -1,5 +1,7 @@
 package com.lookingfor.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.lookingfor.dto.ItemDTO;
 import com.lookingfor.dto.PictureDTO;
@@ -45,19 +48,75 @@ public class ItemService {
 		this.userRepository = userRepository;
 	}
 	
+	//item을 삭제하는 메소드
+	public boolean deleteItemById(Integer id) {
+		// 1. 삭제하려는 대상이 db에 있는지 확인
+		Optional<ItemEntity> optItem = itemRepository.findById(id);
+		if(!optItem.isPresent()) {
+			return false;
+		}
+		
+		itemRepository.deleteById(id);
+		
+		return true;
+		
+	}
+	
+	
+	//사진 이미지를 저장하는 메소드
+	private String saveImageFile(MultipartFile imageFile) {
+		String path =  System.getProperty("user.dir") + "/src/main/resources/uploads/";
+		String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+		
+		// 실제로 받아온 MultipartFile 타입을 기반으로 저장시킬 새로운 File타입을 생성
+		File file = new File(path, fileName);
+		
+		try {
+			imageFile.transferTo(file);
+			return file.getAbsolutePath();
+		}catch(IOException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			System.out.println("파일 전송 중 오류 발생");
+			return null;
+		}
+		
+		
+		
+	}
+	
 	
 	//새로운 item을 create 하는 메소드
 	public ItemDTO createItem(ItemDTO itemDto) {
 		ItemDTO itemDTO = new ItemDTO();
-		
+		List<PictureEntity> pictures = new ArrayList<>();
 		// ItemDTO를 ItemEntity로 변환
 		ItemEntity itemEntity = new ItemEntity();
+		
+		// 사진 파일 저장
+		for(MultipartFile photo : itemDto.getPhotos()) {
+			
+			if(photo != null && !photo.isEmpty()) {
+				String imagePath = saveImageFile(photo);
+				System.out.println(imagePath);
+				PictureEntity pe = new PictureEntity();
+				pe.setUrl(imagePath);
+				pe.setItem(itemEntity);
+				pictures.add(pe);
+			}
+			
+		}
+		
+		
 		itemEntity.setName(itemDto.getName());
 		
 		Optional<CategoryEntity> optCe = categoryRepository.findById(itemDto.getCategoryId());
 		if(!optCe.isPresent()) {
+			System.out.println("확인1");
 			return itemDTO;
 		}
+		
+		
 		itemEntity.setCategory( optCe.get() );
 		
 		itemEntity.setFoundDate(itemDto.getFoundDate());
@@ -65,6 +124,7 @@ public class ItemService {
 		
 		Optional<LocationEntity> optLe = locationRepository.findById(itemDto.getLocationId());
 		if(!optLe.isPresent()) {
+			System.out.println("확인2");
 			return itemDTO;
 		}
 		itemEntity.setLocation(optLe.get());
@@ -75,9 +135,12 @@ public class ItemService {
 		
 		Optional<UserEntity> optUe = userRepository.findById(itemDto.getUserId());
 		if(!optUe.isPresent()) {
+			System.out.println("확인3");
 			return itemDTO;
 		}
 		itemEntity.setUser(optUe.get());
+		
+		itemEntity.setPictures(pictures);
 		
 		try {
 			ItemEntity savedItem = itemRepository.save(itemEntity);
@@ -98,79 +161,101 @@ public class ItemService {
 			itemDTO.setDescription(savedItem.getDescription());
 			itemDTO.setUserId(savedItem.getUser().getId());
 			
+			
 			return itemDTO;
 
 		}catch(Exception e) {
+			System.out.println("확인4");
+			e.printStackTrace();
 			return itemDTO;
 		}
 
 	}
 	
 	//특정 item을 수정하는 메소드 
-	public ItemDTO updateItemById(ItemDTO itemDto) {
+	public ItemDTO updateItemById(Integer id, ItemDTO itemDto) {
 		
-		ItemDTO itemDTO = new ItemDTO();
+		ItemDTO responseItem = new ItemDTO();
 		
-		Optional<ItemEntity> optionalItem = itemRepository.findById(itemDto.getId());
+		Optional<ItemEntity> optionalItem = itemRepository.findById(id);
 		if(!optionalItem.isPresent()) {
-			return itemDTO; // 해당 id의 item이 없음
+			return responseItem; // 해당 id의 item이 없음
 		}
 		
 		
 		// ItemDTO를 ItemEntity로 변환
-		ItemEntity itemEntity = new ItemEntity();
-		itemEntity.setName(itemDto.getName());
-		
-		Optional<CategoryEntity> optCe = categoryRepository.findById(itemDto.getCategoryId());
-		if(!optCe.isPresent()) {
-			return itemDTO;
+		ItemEntity itemEntity = optionalItem.get();
+		if(itemDto.getName() != null) {
+			itemEntity.setName(itemDto.getName());			
 		}
-		itemEntity.setCategory( optCe.get() );
+		
+		if(itemDto.getCategoryId() != null) {
+			Optional<CategoryEntity> optCe = categoryRepository.findById(itemDto.getCategoryId());
+			if(!optCe.isPresent()) {
+				return responseItem;
+			}
+			itemEntity.setCategory( optCe.get() );			
+		}
 
-		
-		itemEntity.setFoundDate(itemDto.getFoundDate());
-		itemEntity.setNameTag(itemDto.getNameTag());
-		
-		Optional<LocationEntity> optLe = locationRepository.findById(itemDto.getLocationId());
-		if(!optLe.isPresent()) {
-			return itemDTO;
+		if(itemDto.getFoundDate() != null) {
+			itemEntity.setFoundDate(itemDto.getFoundDate());			
 		}
-		itemEntity.setLocation(optLe.get());
-		
-		itemEntity.setFoundYn(itemDto.getFoundYn());
-		itemEntity.setDescription(itemDto.getDescription());
-		
-		Optional<UserEntity> optUe = userRepository.findById(itemDto.getUserId());
-		if(!optUe.isPresent()) {
-			return itemDTO;
+		if(itemDto.getNameTag() != null) {
+			itemEntity.setNameTag(itemDto.getNameTag());			
 		}
-		itemEntity.setUser(optUe.get());
+		if(itemDto.getLocationId() != null) {
+			Optional<LocationEntity> optLe = locationRepository.findById(itemDto.getLocationId());
+			if(!optLe.isPresent()) {
+				return responseItem;
+			}
+			itemEntity.setLocation(optLe.get());			
+		}
+		
+		if(itemDto.getFoundYn() != null) {
+			itemEntity.setFoundYn(itemDto.getFoundYn());			
+		}
+		
+		if(itemDto.getDescription() != null) {
+			itemEntity.setDescription(itemDto.getDescription());			
+		}
+		
+		if(itemDto.getUserId() != null) {
+			Optional<UserEntity> optUe = userRepository.findById(itemDto.getUserId());
+			if(!optUe.isPresent()) {
+				return responseItem;
+			}
+			itemEntity.setUser(optUe.get());			
+		}
 		
 		//추가 
-		itemEntity.setPickupDate(itemDto.getPickupDate());
-		itemEntity.setPickupPersonName(itemDto.getPickupPersonName());
+		if(itemDto.getPickupDate() != null) {
+			itemEntity.setPickupDate(itemDto.getPickupDate());			
+		}
+		if(itemDto.getPickupPersonName() != null) {
+			itemEntity.setPickupPersonName(itemDto.getPickupPersonName());			
+		}
 	
 		try {
 			ItemEntity savedItem = itemRepository.save(itemEntity);
 			// front에 전달하기 위해 Entity를 DTO로 변환
-			itemDTO.setId(savedItem.getId());
-			itemDTO.setName(savedItem.getName());
-			itemDTO.setCategoryId(savedItem.getCategory().getId());
-			itemDTO.setCategoryName(savedItem.getCategory().getName());
-			itemDTO.setFoundDate(savedItem.getFoundDate());
-			itemDTO.setNameTag(savedItem.getNameTag());
-			itemDTO.setLocationId(savedItem.getLocation().getId());
-			itemDTO.setLocationName(savedItem.getLocation().getName());
-			itemDTO.setFoundYn(savedItem.getFoundYn());
-			itemDTO.setPickupDate(savedItem.getPickupDate());
-			itemDTO.setPickupPersonName(savedItem.getPickupPersonName());
-			itemDTO.setDescription(savedItem.getDescription());
-			itemDTO.setUserId(savedItem.getUser().getId());
+			responseItem.setId(savedItem.getId());
+			responseItem.setName(savedItem.getName());
+			responseItem.setCategoryId(savedItem.getCategory().getId());
+			responseItem.setCategoryName(savedItem.getCategory().getName());
+			responseItem.setFoundDate(savedItem.getFoundDate());
+			responseItem.setNameTag(savedItem.getNameTag());
+			responseItem.setLocationId(savedItem.getLocation().getId());
+			responseItem.setLocationName(savedItem.getLocation().getName());
+			responseItem.setFoundYn(savedItem.getFoundYn());
+			responseItem.setPickupDate(savedItem.getPickupDate());
+			responseItem.setPickupPersonName(savedItem.getPickupPersonName());
+			responseItem.setDescription(savedItem.getDescription());
+			responseItem.setUserId(savedItem.getUser().getId());
 		
-			return itemDTO;
+			return responseItem;
 
 		}catch(Exception e) {
-			return itemDTO;
+			return responseItem;
 		}
 	
 	}
