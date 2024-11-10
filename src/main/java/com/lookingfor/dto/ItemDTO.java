@@ -29,7 +29,7 @@ public class ItemDTO {
 	}
 
 
-	public void setPhoto(List<MultipartFile> photos) {
+	public void setPhotos(List<MultipartFile> photos) {
 		this.photos = photos;
 	}
 

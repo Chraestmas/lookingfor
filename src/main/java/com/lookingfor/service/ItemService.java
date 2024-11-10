@@ -65,7 +65,7 @@ public class ItemService {
 	
 	//사진 이미지를 저장하는 메소드
 	private String saveImageFile(MultipartFile imageFile) {
-		String path =  System.getProperty("user.dir") + "/src/main/resources/uploads/";
+		String path =  System.getProperty("user.dir") + "/src/main/resources/static/uploads/";
 		String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
 		
 		// 실제로 받아온 MultipartFile 타입을 기반으로 저장시킬 새로운 File타입을 생성
@@ -73,7 +73,7 @@ public class ItemService {
 		
 		try {
 			imageFile.transferTo(file);
-			return "/src/main/resources/uploads/" + file.getName();
+			return "/uploads/" + file.getName();
 		}catch(IOException e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
