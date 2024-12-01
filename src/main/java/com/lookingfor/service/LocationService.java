@@ -3,10 +3,13 @@ package com.lookingfor.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.lookingfor.dto.LocationDTO;
 import com.lookingfor.entity.LocationEntity;
 import com.lookingfor.repository.LocationRepository;
 
+@Service
 public class LocationService {
 	
 	LocationRepository locationRepository;
