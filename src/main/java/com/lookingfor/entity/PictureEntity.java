@@ -1,16 +1,26 @@
 package com.lookingfor.entity;
 
+import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "picture")
 public class PictureEntity {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer 	id;
 	private String 		url;
-	private Integer 	itemId;
+	
+	@ManyToOne
+	@JoinColumn(name = "item_id")
+	private ItemEntity 	item;
 	
 	public Integer getId() {
 		return id;
@@ -24,12 +34,12 @@ public class PictureEntity {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	public Integer getItemId() {
-		return itemId;
+	public ItemEntity getItem() {
+		return item;
 	}
-	public void setItemId(Integer itemId) {
-		this.itemId = itemId;
+	public void setItem(ItemEntity item) {
+		this.item = item;
 	}
-	
+
 	
 }

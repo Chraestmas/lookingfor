@@ -3,6 +3,8 @@ package com.lookingfor.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class ItemDTO {
 	
 	private Integer 	id;
@@ -19,7 +21,19 @@ public class ItemDTO {
 	private String 		description;
 	private String 		userId;
 	private List<PictureDTO> pictures;
+	private List<MultipartFile> photos;
 	
+	
+	public List<MultipartFile> getPhotos() {
+		return photos;
+	}
+
+
+	public void setPhoto(List<MultipartFile> photos) {
+		this.photos = photos;
+	}
+
+
 	@Override
 	public String toString() {
 		String res = "";
