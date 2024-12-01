@@ -13,9 +13,6 @@ import com.lookingfor.entity.ItemEntity;
 @Repository
 public interface CategoryRepository  extends JpaRepository<CategoryEntity, Integer>{
 	
-	List<CategoryEntity> findAll(
-			Integer id, 
-			String name
-	);
+	
 
 }

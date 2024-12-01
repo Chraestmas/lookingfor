@@ -10,9 +10,6 @@ import com.lookingfor.entity.LocationEntity;
 @Repository
 public interface LocationRepository extends JpaRepository<LocationEntity, Integer>{
 	
-	List<LocationEntity> findAll(
-			Integer id, 
-			String name
-	);
+
 
 }
