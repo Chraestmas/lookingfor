@@ -22,7 +22,7 @@ import com.lookingfor.response.PageResponse;
 import com.lookingfor.service.ItemService;
 
 @Controller
-@CrossOrigin(origins = "http://localhost:8001")
+@CrossOrigin(origins = "http://localhost:8089")
 public class ItemController {
 	
 	ItemService itemService;
@@ -62,8 +62,9 @@ public class ItemController {
 //	}
 	@PostMapping("/api/item")
 	public ResponseEntity<ItemDTO> createNewItem(@ModelAttribute ItemDTO itemDto) {
-//		System.out.println(itemDto);
-//		System.out.println(itemDto.getPhoto().isEmpty());
+		System.out.println(itemDto.getName());
+		System.out.println(itemDto.getPhotos());
+		
 		return ResponseEntity.status(200).body(itemService.createItem(itemDto));
 		
 	}
