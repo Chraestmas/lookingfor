@@ -94,22 +94,25 @@ public class ItemService {
 		ItemEntity itemEntity = new ItemEntity();
 		
 		// 사진 파일 저장
-		for(MultipartFile photo : itemDto.getPhotos()) {
-			
-			if(photo != null && !photo.isEmpty()) {
-				String imagePath = saveImageFile(photo);
-				System.out.println(imagePath);
-				PictureEntity pe = new PictureEntity();
-				pe.setUrl(imagePath);
-				pe.setItem(itemEntity);
-				pictures.add(pe);
+		if(itemDto.getPhotos() != null) {
+		
+			for(MultipartFile photo : itemDto.getPhotos()) {
+				
+				if(photo != null && !photo.isEmpty()) {
+					String imagePath = saveImageFile(photo);
+					System.out.println(imagePath);
+					PictureEntity pe = new PictureEntity();
+					pe.setUrl(imagePath);
+					pe.setItem(itemEntity);
+					pictures.add(pe);
+				}
+				
 			}
-			
 		}
 		
 		
 		itemEntity.setName(itemDto.getName());
-		
+		System.out.println("category id" + itemDto.getCategoryId());
 		Optional<CategoryEntity> optCe = categoryRepository.findById(itemDto.getCategoryId());
 		if(!optCe.isPresent()) {
 			System.out.println("확인1");
@@ -121,6 +124,7 @@ public class ItemService {
 		
 		itemEntity.setFoundDate(itemDto.getFoundDate());
 		itemEntity.setNameTag(itemDto.getNameTag());
+		System.out.println("category id" + itemDto.getLocationId());
 		
 		Optional<LocationEntity> optLe = locationRepository.findById(itemDto.getLocationId());
 		if(!optLe.isPresent()) {
