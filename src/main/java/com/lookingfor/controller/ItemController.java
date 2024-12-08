@@ -32,11 +32,8 @@ public class ItemController {
 		this.itemService = itemService;
 	}
 	
-//<<<<<<< HEAD
-//	// id로 item을 조회하는 api
-//=======
-//	// id로 item을 조회하는 api (한 건) 
-//>>>>>>> c9103953d23b55052705294835189561880daa82
+
+	// id로 item을 조회하는 api (한 건) 
 	@GetMapping("/api/item/{id}")
 	public ResponseEntity<ItemDTO> getItemById(@PathVariable("id") Integer id) {
 		return ResponseEntity.status(200).body(itemService.getItemById(id));
@@ -84,8 +81,6 @@ public class ItemController {
 		return ResponseEntity.status(400).body("실패");	
 		
 	}
-	
-//>>>>>>> c9103953d23b55052705294835189561880daa82
 }
 
 
