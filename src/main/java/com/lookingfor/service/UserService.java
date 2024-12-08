@@ -7,8 +7,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.lookingfor.dto.ItemDTO;
+import com.lookingfor.dto.PictureDTO;
 import com.lookingfor.dto.UserDTO;
 import com.lookingfor.entity.ItemEntity;
+import com.lookingfor.entity.PictureEntity;
 import com.lookingfor.entity.UserEntity;
 import com.lookingfor.repository.CategoryRepository;
 import com.lookingfor.repository.ItemRepository;
@@ -26,6 +30,7 @@ public class UserService {
 		this.userRepository = userRepository;
 	}
 	
+	//user 생성하는 메소드 
 	public UserDTO createUser(UserDTO userDTO) {
 		
 		//UserDTO userDTO = new UserDTO();
@@ -53,8 +58,9 @@ public class UserService {
 			return null;
 		}
 		
-	}
+	} // end of createUser
 	
+	//password 리셋하는 메소드 
 	public boolean resetPassword(UserDTO userDto) {
 		
         Optional<UserEntity> user = userRepository.findById(userDto.getId());
@@ -65,5 +71,24 @@ public class UserService {
             return true;
         }
         return false;
-	}
+	} // end of resetPassword
+	
+	
+	//user를 id로 찾는 메소드 
+	public UserDTO getUserById(String id) {
+		UserDTO userDTO = new UserDTO();
+		
+		Optional<UserEntity> optionalUser = userRepository.findById(id);
+		if(!optionalUser.isPresent()) {
+			return userDTO; // 해당 id의 user 없음
+		}
+		
+		UserEntity userEntity = optionalUser.get();
+		
+		userDTO.setId(userEntity.getId());
+		userDTO.setName(userEntity.getName());
+		
+		return userDTO;
+	} // end of getUserById
+	
 }
