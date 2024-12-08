@@ -15,6 +15,7 @@ import com.lookingfor.repository.ItemRepository;
 import com.lookingfor.repository.LocationRepository;
 import com.lookingfor.repository.PictureRepository;
 import com.lookingfor.repository.UserRepository;
+import com.lookingfor.util.JwtUtil;
 
 @Service
 public class UserService {
@@ -25,6 +26,20 @@ public class UserService {
 	public UserService(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
+	// 로그인 처리 및 JWT 토큰 반환
+    public String loginUser(UserDTO userDto) {
+    	Optional<UserEntity> optUser = userRepository.findById(userDto.getId());
+    	if(optUser.isEmpty()) {
+    		throw new RuntimeException("Invalid credentials");
+    	}
+    	UserEntity loginUser = optUser.get();
+        if (loginUser.getId().equals(userDto.getId()) && loginUser.getPassword().equals(userDto.getPassword())) {
+            // 로그인 성공 시 JWT 토큰 생성
+            return JwtUtil.generateToken(userDto.getId());
+        } else {
+            throw new RuntimeException("Invalid credentials");
+        }
+    }
 	
 	public UserDTO createUser(UserDTO userDTO) {
 		
