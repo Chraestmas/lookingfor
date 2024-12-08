@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.lookingfor.dto.UserDTO;
 import com.lookingfor.entity.ItemEntity;
@@ -15,6 +16,7 @@ import com.lookingfor.repository.LocationRepository;
 import com.lookingfor.repository.PictureRepository;
 import com.lookingfor.repository.UserRepository;
 
+@Service
 public class UserService {
 	
 	UserRepository userRepository;
@@ -47,8 +49,21 @@ public class UserService {
 		}catch(Exception e) {
 			System.out.println("확인4");
 			e.printStackTrace();
-			return userDTO;
+//			return userDTO;
+			return null;
 		}
 		
+	}
+	
+	public boolean resetPassword(UserDTO userDto) {
+		
+        Optional<UserEntity> user = userRepository.findById(userDto.getId());
+        if (user.isPresent()) {
+            UserEntity u = user.get();
+            u.setPassword(userDto.getPassword());  // 새 비밀번호 설정
+            userRepository.save(u);      // 비밀번호 저장
+            return true;
+        }
+        return false;
 	}
 }

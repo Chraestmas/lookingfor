@@ -31,17 +31,21 @@ public class CategoryService {
 	public List<CategoryDTO> getCategories() {
 		
 		List<CategoryEntity> res = null;
-		CategoryDTO categoryDTO = new CategoryDTO();
 		
 		res = categoryRepository.findAll();
 		
 		List<CategoryDTO> categoryDTOList = new ArrayList<>();
 		
 		for(CategoryEntity categoryEntity : res) {
+			CategoryDTO categoryDTO = new CategoryDTO();
 			categoryDTO.setId(categoryEntity.getId());
 			categoryDTO.setName(categoryEntity.getName());
 			categoryDTOList.add(categoryDTO);
 		}//end of for
+//		
+//		for(CategoryDTO category : categoryDTOList ) {
+//			System.out.println("name : " + category.getName());
+//		}
 	
 		return categoryDTOList;
 	}

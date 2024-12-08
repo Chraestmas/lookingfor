@@ -24,13 +24,13 @@ public class LocationService {
 	public List<LocationDTO> getLocations() {
 		
 		List<LocationEntity> res = null;
-		LocationDTO locationDTO = new LocationDTO();
 		
 		res = locationRepository.findAll();
 		
 		List<LocationDTO> locationDTOList = new ArrayList<>();
 		
 		for(LocationEntity locationEntity : res) {
+			LocationDTO locationDTO = new LocationDTO();
 			locationDTO.setId(locationEntity.getId());
 			locationDTO.setName(locationEntity.getName());
 			locationDTOList.add(locationDTO);

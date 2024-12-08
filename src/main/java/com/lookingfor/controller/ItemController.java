@@ -1,5 +1,6 @@
 package com.lookingfor.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 //import java.util.List;
@@ -16,7 +17,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.lookingfor.dto.ItemDTO;
 import com.lookingfor.response.PageResponse;
 import com.lookingfor.service.ItemService;
@@ -58,12 +62,16 @@ public class ItemController {
 //
 //	}
 	@PostMapping("/api/item")
-	public ResponseEntity<ItemDTO> createNewItem(@ModelAttribute ItemDTO itemDto) {
-		System.out.println(itemDto.getName());
-		System.out.println(itemDto.getPhotos());
-		
-		return ResponseEntity.status(200).body(itemService.createItem(itemDto));
-		
+	public ResponseEntity<ItemDTO> createNewItem(@RequestParam("formData") String formData, 
+			@RequestParam(name = "photos", required = false) List<MultipartFile> photos) throws IOException {
+	    // itemDtoJson을 ItemDTO 객체로 변환
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    ItemDTO itemDto = objectMapper.registerModule(new JavaTimeModule()).readValue(formData, ItemDTO.class);
+	    
+	    // photos 처리
+	    itemDto.setPhotos(photos);
+
+	    return ResponseEntity.status(200).body(itemService.createItem(itemDto));
 	}
 	
 	//item 정보를 수정하는 api
