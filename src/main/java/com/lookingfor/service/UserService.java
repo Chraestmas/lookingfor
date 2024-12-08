@@ -1,6 +1,7 @@
 package com.lookingfor.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,16 +32,25 @@ public class UserService {
 		this.userRepository = userRepository;
 	}
 	// 로그인 처리 및 JWT 토큰 반환
-    public String loginUser(UserDTO userDto) {
+    public HashMap<String, String> loginUser(UserDTO userDto) {
     	Optional<UserEntity> optUser = userRepository.findById(userDto.getId());
     	if(optUser.isEmpty()) {
+    		System.out.println("확인1");
     		throw new RuntimeException("Invalid credentials");
     	}
     	UserEntity loginUser = optUser.get();
-        if (loginUser.getId().equals(userDto.getId()) && loginUser.getPassword().equals(userDto.getPassword())) {
+    	if (loginUser.getId().equals(userDto.getId()) && loginUser.getPassword().equals(userDto.getPassword())) {
             // 로그인 성공 시 JWT 토큰 생성
-            return JwtUtil.generateToken(userDto.getId());
+        	System.out.println("확인3");
+        	HashMap<String, String> response = new HashMap<>();
+        	System.out.println("jwt token : " + JwtUtil.generateToken(userDto.getId()));
+        	System.out.println("response : " + response);
+        	response.put("authToken", JwtUtil.generateToken(userDto.getId()));
+        	System.out.println("response : " + response);
+        	response.put("id", userDto.getId());
+            return response;
         } else {
+        	System.out.println("확인2");
             throw new RuntimeException("Invalid credentials");
         }
     }

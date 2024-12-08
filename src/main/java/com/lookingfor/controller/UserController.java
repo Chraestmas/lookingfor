@@ -1,5 +1,7 @@
 package com.lookingfor.controller;
 
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -32,12 +34,12 @@ public class UserController {
 
 
 	@PostMapping("/api/login")
-	public ResponseEntity<String> loginUser(@RequestBody UserDTO userDto) {
+	public ResponseEntity<HashMap<String, String>> loginUser(@RequestBody UserDTO userDto) {
+		
 		try {
-			String jwtToken = userService.loginUser(userDto); // 로그인 후 JWT 토큰 반환
-			return ResponseEntity.ok().body(jwtToken); // JWT 토큰을 응답
+			return ResponseEntity.ok().body(userService.loginUser(userDto)); // JWT 토큰을 응답
 		} catch (Exception e) {
-			return ResponseEntity.status(401).body("Invalid credentials");
+			return ResponseEntity.status(401).body(null);
 		}
 	}
 	
