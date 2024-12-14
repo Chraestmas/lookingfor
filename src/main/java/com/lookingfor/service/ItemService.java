@@ -328,12 +328,10 @@ public class ItemService {
 		}
 		
 		if(itemName == null) {
-			itemName ="%%";
-		}else {
-			itemName = "%" + itemName + "%";
+			itemName ="";
 		}
 		
-		res = itemRepository.findAllByFoundYnInAndCategory_IdInAndNameLike(foundYns, categoryIds, itemName, pr);
+		res = itemRepository.findAllByFoundYnInAndCategory_IdInAndNameIgnoreCaseContaining(foundYns, categoryIds, itemName, pr);
 		
 		// res.getContent() --> 리스트<ItemEntity>  --> 리스트<ItemDTO>
 		// ItemEntity를 DTO로 바꿔주고 PageResponse에다 담아서 Controller로 전달

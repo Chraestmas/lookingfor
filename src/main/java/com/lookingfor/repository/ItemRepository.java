@@ -29,7 +29,7 @@ public interface ItemRepository extends JpaRepository<ItemEntity, Integer>{
 //			@Param("itemName") String itemName);
 	
 	
-		Page<ItemEntity> findAllByFoundYnInAndCategory_IdInAndNameLike(
+		Page<ItemEntity> findAllByFoundYnInAndCategory_IdInAndNameIgnoreCaseContaining(
 				List<Character> foundYns,
 				List<Integer> categoryIds, 
 				String name,
