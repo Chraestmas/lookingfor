@@ -4,7 +4,9 @@ public class UserDTO {
 	private String 		id;
 	private String 		name;
 	private String 		password;
+	private String 		permit;
 	
+	//getters
 	public String getId() {
 		return id;
 	}
@@ -14,6 +16,11 @@ public class UserDTO {
 	public String getName() {
 		return name;
 	}
+	public String getPermit() {
+		return permit;
+	}
+	
+	//setters
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -23,6 +30,8 @@ public class UserDTO {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+	public void setPermit(String permit) {
+		this.permit = permit;
+	}
 	
 }

@@ -38,7 +38,10 @@ public class UserService {
     		System.out.println("확인1");
     		throw new RuntimeException("Invalid credentials");
     	}
+    	
     	UserEntity loginUser = optUser.get();
+    	
+    	//id, password 검증 
     	if (loginUser.getId().equals(userDto.getId()) && loginUser.getPassword().equals(userDto.getPassword())) {
             // 로그인 성공 시 JWT 토큰 생성
         	System.out.println("확인3");
@@ -50,8 +53,8 @@ public class UserService {
         	response.put("id", userDto.getId());
             return response;
         } else {
-        	System.out.println("확인2");
-            throw new RuntimeException("Invalid credentials");
+        	System.out.println("확인4");
+            throw new RuntimeException("Invalid Id or Password");
         }
     }
 	
@@ -62,17 +65,17 @@ public class UserService {
 		// UserDTO를 UserEntity로 변환
 		UserEntity userEntity = new UserEntity();
 		
-		
 		userEntity.setId(userDTO.getId());
 		userEntity.setName(userDTO.getName());
 		userEntity.setPassword(userDTO.getPassword());
+		userEntity.setPermit(userDTO.getPermit());
 		
 		try {
 			UserEntity savedUser = userRepository.save(userEntity);
 			userDTO.setId(savedUser.getId());
 			userDTO.setName(savedUser.getName());
 			userDTO.setPassword(savedUser.getPassword());
-			
+			userDTO.setPermit(savedUser.getPermit());
 			
 			return userDTO;
 
