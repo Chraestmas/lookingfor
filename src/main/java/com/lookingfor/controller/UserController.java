@@ -39,7 +39,16 @@ public class UserController {
 		try {
 			return ResponseEntity.ok().body(userService.loginUser(userDto)); // JWT 토큰을 응답
 		} catch (Exception e) {
-			return ResponseEntity.status(401).body(null);
+			if(e.getMessage().equals("Not permitted user")) { // permit이 N인 경우
+				return ResponseEntity.status(403).body(null);
+			}else if(e.getMessage().equals("Invalid Id or Password")) { // 비밀번호를 틀렸을경우
+				return ResponseEntity.status(400).body(null);
+			}else if(e.getMessage().equals("Invalid credentials")) { // id가 존재하지 않는 경우
+				return ResponseEntity.status(401).body(null);
+			}else {
+				return ResponseEntity.status(500).body(null);
+			}
+			
 		}
 	}
 	
