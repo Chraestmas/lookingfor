@@ -47,6 +47,24 @@ public class ItemService {
 		this.locationRepository = locationRepository;
 		this.userRepository = userRepository;
 	}
+	public boolean deleteImage(Integer id) {
+		Optional<PictureEntity> optPic = pictureRepository.findById(id);
+		if(optPic.isEmpty()) {
+			return false;
+		}
+		PictureEntity pictureEntity = optPic.get();
+		
+		String path =  System.getProperty("user.dir") + "/src/main/resources/static/" + pictureEntity.getUrl();
+		File file = new File(path);
+		System.out.println(file);
+		
+		if(file.delete()) {
+			pictureRepository.deleteById(id);
+			return true;
+		}else {
+			return false;
+		}
+	}
 	
 	//item을 삭제하는 메소드
 	public boolean deleteItemById(Integer id) {
@@ -241,6 +259,20 @@ public class ItemService {
 	
 		try {
 			ItemEntity savedItem = itemRepository.save(itemEntity);
+			// 사진 파일 저장
+			if(itemDto.getPhotos() != null) {
+				for(MultipartFile photo : itemDto.getPhotos()) {
+					if(photo != null && !photo.isEmpty()) {
+						String imagePath = saveImageFile(photo);
+						System.out.println(imagePath);
+						PictureEntity pe = new PictureEntity();
+						pe.setUrl(imagePath);
+						pe.setItem(savedItem);
+						pictureRepository.save(pe);
+					}
+				}
+			}
+			
 			// front에 전달하기 위해 Entity를 DTO로 변환
 			responseItem.setId(savedItem.getId());
 			responseItem.setName(savedItem.getName());

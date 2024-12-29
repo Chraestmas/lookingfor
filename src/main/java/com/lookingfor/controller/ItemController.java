@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.lookingfor.dto.ItemDTO;
@@ -76,7 +78,14 @@ public class ItemController {
 	
 	//item 정보를 수정하는 api
 	@PutMapping("/api/item/{id}")
-	public ResponseEntity<ItemDTO> updateItem(@PathVariable(name = "id") Integer id, @RequestBody ItemDTO itemDto) {
+	public ResponseEntity<ItemDTO> updateItem(@PathVariable(name = "id") Integer id, @RequestParam("formData") String formData, 
+			@RequestParam(name = "photos", required = false) List<MultipartFile> photos) throws JsonMappingException, JsonProcessingException {
+		 // itemDtoJson을 ItemDTO 객체로 변환
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    ItemDTO itemDto = objectMapper.registerModule(new JavaTimeModule()).readValue(formData, ItemDTO.class);
+	    
+	    // photos 처리
+	    itemDto.setPhotos(photos);
 		return ResponseEntity.status(200).body(itemService.updateItemById( id ,itemDto));
 	}
 	
@@ -88,6 +97,15 @@ public class ItemController {
 		}
 		return ResponseEntity.status(400).body("실패");	
 		
+	}
+	
+	@DeleteMapping("/api/image/{id}")
+	public ResponseEntity<?> deleteImage(@PathVariable(name = "id") Integer id){
+		boolean isSuccess = itemService.deleteImage(id);
+		if(isSuccess) {
+			return ResponseEntity.status(200).body("Success");			
+		}
+		return ResponseEntity.status(400).body("fail");			
 	}
 }
 
