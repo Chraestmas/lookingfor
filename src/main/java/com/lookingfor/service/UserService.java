@@ -35,11 +35,15 @@ public class UserService {
     public HashMap<String, String> loginUser(UserDTO userDto) {
     	Optional<UserEntity> optUser = userRepository.findById(userDto.getId());
     	if(optUser.isEmpty()) {
-    		System.out.println("확인1");
     		throw new RuntimeException("Invalid credentials");
     	}
     	
     	UserEntity loginUser = optUser.get();
+    	
+    	// 허용되는 아이디인지 확인 (permit)
+    	if(loginUser.getPermit().equals("N")) {
+    		throw new RuntimeException("Not permitted user");
+    	}
     	
     	//id, password 검증 
     	if (loginUser.getId().equals(userDto.getId()) && loginUser.getPassword().equals(userDto.getPassword())) {
@@ -53,7 +57,6 @@ public class UserService {
         	response.put("id", userDto.getId());
             return response;
         } else {
-        	System.out.println("확인4");
             throw new RuntimeException("Invalid Id or Password");
         }
     }
@@ -68,7 +71,7 @@ public class UserService {
 		userEntity.setId(userDTO.getId());
 		userEntity.setName(userDTO.getName());
 		userEntity.setPassword(userDTO.getPassword());
-		userEntity.setPermit(userDTO.getPermit());
+		userEntity.setPermit("N");
 		
 		try {
 			UserEntity savedUser = userRepository.save(userEntity);
