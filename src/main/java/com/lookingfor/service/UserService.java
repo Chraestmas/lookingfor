@@ -61,7 +61,12 @@ public class UserService {
 	//user 생성하는 메소드 
 	public UserDTO createUser(UserDTO userDTO) {
 		
-		//UserDTO userDTO = new UserDTO();
+		//id 중복 확인 
+		Optional<UserEntity> optionalUser = userRepository.findById(userDTO.getId());
+		if(optionalUser.isPresent()) {
+			throw new RuntimeException("Already Existed Id!");
+		}
+		
 		// UserDTO를 UserEntity로 변환
 		UserEntity userEntity = new UserEntity();
 		
