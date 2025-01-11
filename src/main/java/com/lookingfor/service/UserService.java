@@ -4,15 +4,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.lookingfor.dto.ItemDTO;
 import com.lookingfor.dto.PictureDTO;
 import com.lookingfor.dto.UserDTO;
+import com.lookingfor.entity.CategoryEntity;
 import com.lookingfor.entity.ItemEntity;
+import com.lookingfor.entity.LocationEntity;
 import com.lookingfor.entity.PictureEntity;
 import com.lookingfor.entity.UserEntity;
 import com.lookingfor.repository.CategoryRepository;
@@ -20,6 +26,7 @@ import com.lookingfor.repository.ItemRepository;
 import com.lookingfor.repository.LocationRepository;
 import com.lookingfor.repository.PictureRepository;
 import com.lookingfor.repository.UserRepository;
+import com.lookingfor.response.PageResponse;
 import com.lookingfor.util.JwtUtil;
 
 @Service
@@ -31,6 +38,7 @@ public class UserService {
 	public UserService(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
+	
 	// 로그인 처리 및 JWT 토큰 반환
     public HashMap<String, String> loginUser(UserDTO userDto) {
     	Optional<UserEntity> optUser = userRepository.findById(userDto.getId());
@@ -67,7 +75,7 @@ public class UserService {
 		//id 중복 확인 
 		Optional<UserEntity> optionalUser = userRepository.findById(userDTO.getId());
 		if(optionalUser.isPresent()) {
-			throw new RuntimeException("Already Existed Id!");
+			throw new RuntimeException("Already Existed Id");
 		}
 		
 		// UserDTO를 UserEntity로 변환
@@ -126,5 +134,80 @@ public class UserService {
 		
 		return userDTO;
 	} // end of getUserById
+	
+	
+	///////////////////////////////////////////////////////////////////////////////////
+
+	//모든 user를 조회하는 메소드 
+	public List<UserDTO> getUsers() {
+		
+		List<UserEntity> res = null;
+		
+		res = userRepository.findAll();
+		
+		// res.getContent() --> 리스트<UserEntity>  --> 리스트<UserDTO>
+		// UserEntity를 DTO로 바꿔주고 userDTOList에 담아서 Controller로 전달
+		List<UserDTO> userDTOList = new ArrayList<>();
+		
+		for(UserEntity userEntity : res) {
+			UserDTO userDTO = new UserDTO();			
+			userDTO.setId(userEntity.getId());
+			userDTO.setName(userEntity.getName());
+			userDTO.setPermit(userEntity.getPermit());
+
+			userDTOList.add(userDTO);			
+		} // end of for
+		
+		return userDTOList;
+
+	} // end of getUsers
+	
+	
+	
+	
+	//특정 user permit 수정하는 메소드 
+	public UserDTO updateUserPermitById(String id, String permit) {
+		
+		UserDTO responseUser = new UserDTO();
+		
+		Optional<UserEntity> optionalUser = userRepository.findById(id);
+		if(!optionalUser.isPresent()) {
+			return responseUser; // 해당 id의 user이 없음
+		}
+		
+		
+		// UserDTO를 UserEntity로 변환
+		UserEntity userEntity = optionalUser.get();
+		userEntity.setPermit(permit);
+		
+		try {
+			UserEntity savedUser = userRepository.save(userEntity);
+			
+			// front에 전달하기 위해 Entity를 DTO로 변환
+			responseUser.setId(savedUser.getId());
+			responseUser.setName(savedUser.getName());
+			responseUser.setPermit(savedUser.getPermit());
+
+			return responseUser;
+
+		}catch(Exception e) {
+			return responseUser;
+		}
+	
+	} //end of updateUserById
+	
+	
+	//user 삭제하는 메소드
+	public boolean deleteUserById(String id) {
+		// 1. 삭제하려는 대상이 db에 있는지 확인
+		Optional<UserEntity> optUser = userRepository.findById(id);
+		if(!optUser.isPresent()) {
+			return false;
+		}
+		
+		userRepository.deleteById(id);
+		
+		return true;
+	} // end of deleteUserById
 	
 }

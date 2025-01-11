@@ -47,6 +47,7 @@ public class ItemService {
 		this.locationRepository = locationRepository;
 		this.userRepository = userRepository;
 	}
+	
 	public boolean deleteImage(Integer id) {
 		Optional<PictureEntity> optPic = pictureRepository.findById(id);
 		if(optPic.isEmpty()) {
@@ -98,9 +99,6 @@ public class ItemService {
 			System.out.println("파일 전송 중 오류 발생");
 			return null;
 		}
-		
-		
-		
 	}
 	
 	
@@ -127,7 +125,6 @@ public class ItemService {
 				
 			}
 		}
-		
 		
 		itemEntity.setName(itemDto.getName());
 		System.out.println("category id" + itemDto.getCategoryId());
@@ -182,7 +179,6 @@ public class ItemService {
 			itemDTO.setPickupPersonName(savedItem.getPickupPersonName());
 			itemDTO.setDescription(savedItem.getDescription());
 			itemDTO.setUserId(savedItem.getUser().getId());
-			
 			
 			return itemDTO;
 
