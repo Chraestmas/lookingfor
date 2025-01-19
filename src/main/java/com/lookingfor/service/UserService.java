@@ -150,10 +150,11 @@ public class UserService {
 		List<UserDTO> userDTOList = new ArrayList<>();
 		
 		for(UserEntity userEntity : res) {
-			UserDTO userDTO = new UserDTO();			
+			UserDTO userDTO = new UserDTO();
 			userDTO.setId(userEntity.getId());
 			userDTO.setName(userEntity.getName());
 			userDTO.setPermit(userEntity.getPermit());
+			userDTO.setSuperAdmin(userEntity.getSuperAdmin());
 
 			userDTOList.add(userDTO);			
 		} // end of for

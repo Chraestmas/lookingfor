@@ -1,5 +1,6 @@
 package com.lookingfor.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -12,6 +13,8 @@ public class UserEntity {
 	private String name;		
 	private String password;
 	private String permit;
+	@Column(name="superadmin")
+	private String superAdmin;
 	
 	//getters
 	public String getId() {
@@ -25,6 +28,9 @@ public class UserEntity {
 	}
 	public String getPermit() {
 		return permit;
+	}
+	public String getSuperAdmin() {
+		return superAdmin;
 	}
 	
 	//setters
@@ -40,7 +46,9 @@ public class UserEntity {
 	public void setPermit(String permit) {
 		this.permit = permit;
 	}
-	
+	public void setSuperAdmin(String superAdmin) {
+		this.superAdmin = superAdmin;
+	}
 	
 	
 }

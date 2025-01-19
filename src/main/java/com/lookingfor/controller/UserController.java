@@ -92,7 +92,7 @@ public class UserController {
 	///////////////////////////////////////////////////////////////////////////////////
 	
 	//모든 user를 조회하는 메소드  api (여러 건)
-	@GetMapping("/api/user")
+	@GetMapping("/api/users")
 	public ResponseEntity<List<UserDTO>> getUsers() {
 		return ResponseEntity.status(200).body(userService.getUsers());
 	}

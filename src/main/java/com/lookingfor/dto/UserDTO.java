@@ -5,6 +5,7 @@ public class UserDTO {
 	private String 		name;
 	private String 		password;
 	private String 		permit;
+	private String 		superAdmin;
 	
 	//getters
 	public String getId() {
@@ -15,6 +16,9 @@ public class UserDTO {
 	}
 	public String getPermit() {
 		return permit;
+	}
+	public String getSuperAdmin() {
+		return superAdmin;
 	}
 	
 	//setters
@@ -32,6 +36,9 @@ public class UserDTO {
 	}
 	public void setPermit(String permit) {
 		this.permit = permit;
+	}
+	public void setSuperAdmin(String superAdmin) {
+		this.superAdmin = superAdmin;
 	}
 	
 }
