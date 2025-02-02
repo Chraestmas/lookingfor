@@ -131,6 +131,7 @@ public class UserService {
 		
 		userDTO.setId(userEntity.getId());
 		userDTO.setName(userEntity.getName());
+		userDTO.setSuperAdmin(userEntity.getSuperAdmin());
 		
 		return userDTO;
 	} // end of getUserById
